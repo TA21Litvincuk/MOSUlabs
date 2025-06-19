@@ -39,7 +39,11 @@ namespace SampleModel
             pid.Ti = 5;
             pid.Td = 0.1;
 
-            pid.OutputLimit = xLimit; // Ліміт для компенсації насичення інтегратора
+            // Обмеження виходу ПІД-регулятора (для anti-windup)
+            pid.UpLimit = 100;
+            pid.DownLimit = 0;
+
+
 
             // Ініціалізація текстових полів
             tbX.Text = x1.ToString("F2");
@@ -61,7 +65,7 @@ namespace SampleModel
                 // Автоматичне керування через ПІД-регулятор
                 double error = setpoint - y;
                 controlInput = pid.Calc(error);
-                controlInput = xLimit.Calc(controlInput); // обмеження
+                
                 x1 = controlInput; // для графіка
             }
             else
