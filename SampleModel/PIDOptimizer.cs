@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace SampleModel
 {
+    // Клас для оптимізації параметрів PID-регулятора (K і Ti)
     public class PIDOptimizer
     {
         private const double Epsilon = 1e-6;
         private const double Step = 0.1;
         private const int MaxIterations = 1000;
 
-        private readonly Func<double, double, double> costFunction;
+        private readonly Func<double, double, double> targetFunction;
 
         public PIDOptimizer(Func<double, double, double> function)
         {
-            costFunction = function;
+            targetFunction = function;
         }
 
+        // Повертає кортеж: K, Ti, мінімальне ISE, кількість ітерацій
         public (double K, double Ti, double ISE, int iterations) Optimize(double K0, double Ti0)
         {
             double K = K0;
@@ -27,14 +29,14 @@ namespace SampleModel
 
             while (iter < MaxIterations)
             {
-                double current = costFunction(K, Ti);
+                double current = targetFunction(K, Ti);
                 double best = current;
                 double newK = K;
                 double newTi = Ti;
 
-                // Пошук по K
-                double forwardK = costFunction(K + Step, Ti);
-                double backwardK = costFunction(K - Step, Ti);
+                // Крок по K
+                double forwardK = targetFunction(K + Step, Ti);
+                double backwardK = (K - Step > 0) ? targetFunction(K - Step, Ti) : double.MaxValue;
                 if (forwardK < best)
                 {
                     best = forwardK;
@@ -46,9 +48,9 @@ namespace SampleModel
                     newK = K - Step;
                 }
 
-                // Пошук по Ti
-                double forwardTi = costFunction(newK, Ti + Step);
-                double backwardTi = costFunction(newK, Ti - Step);
+                // Крок по Ti
+                double forwardTi = targetFunction(newK, Ti + Step);
+                double backwardTi = (Ti - Step > 0) ? targetFunction(newK, Ti - Step) : double.MaxValue;
                 if (forwardTi < best)
                 {
                     best = forwardTi;
@@ -68,7 +70,7 @@ namespace SampleModel
                 iter++;
             }
 
-            return (K, Ti, costFunction(K, Ti), iter);
+            return (K, Ti, targetFunction(K, Ti), iter);
         }
     }
 }

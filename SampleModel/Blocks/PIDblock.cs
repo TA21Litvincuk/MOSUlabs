@@ -9,13 +9,14 @@ namespace SampleModel.Blocks
 {
 public class PIDBlock : BaseBlock
     {
-        private double dt;
-        private double prevX = 0;
-        private double intSum = 0;
 
-        public double K { get; set; } = 1;
+        private double dt;                  // Крок дискретизації
+        private double prevX = 0;           // Попереднє значення вхідного сигналу (для диференціалу)
+        private double intSum = 0;          // Накопичена інтегральна складова
 
-        private double ki = 1; // Замість 0.000001
+        public double K { get; set; } = 1;  // Пропорційний коефіцієнт
+
+        private double ki = 1;              // Інтегральний коефіцієнт (1/Ti)
         public double Ti
         {
             get => (ki == 0) ? 0 : 1 / ki;
@@ -27,24 +28,25 @@ public class PIDBlock : BaseBlock
             set => ki = value;
         }
 
-        public double Td { get; set; } = 0;
+        public double Td { get; set; } = 0; // Диференціальний коефіцієнт
 
-        public double UpLimit { get; set; } = 100;
-        public double DownLimit { get; set; } = 0;
+        public double UpLimit { get; set; } = 100; // Верхня межа вихідного сигналу
+        public double DownLimit { get; set; } = 0; // Нижня межа
 
         public PIDBlock(double dt)
         {
             this.dt = dt;
         }
 
+        // Обчислення керуючого сигналу за поточним значенням помилки (x)
         public override double Calc(double x)
         {
-            double derivative = (x - prevX) / dt;
+            double derivative = (x - prevX) / dt; // Похідна (швидкість зміни помилки)
 
-            // ПІД вираз
+            // Основна формула ПІД-регулятора
             double u = K * x + ki * intSum + Td * derivative;
 
-            // Перевірка насичення
+            // Обмеження сигналу (saturation)
             bool limited = false;
             if (u > UpLimit)
             {
@@ -57,17 +59,17 @@ public class PIDBlock : BaseBlock
                 limited = true;
             }
 
-            // Anti-windup: інтегруємо лише якщо не насичено та інтеграл активний
+            // Anti-windup: інтегруємо тільки якщо не насичено та інтеграл активний
             if (!limited && ki != 0)
             {
-                intSum += (prevX + x) * dt / 2.0;
+                intSum += (prevX + x) * dt / 2.0; // Інтегруємо методом трапецій
             }
 
             prevX = x;
             return u;
         }
 
-        // Для збереження/відновлення стану інтегратора (при зміні режиму)
+        // Збереження/відновлення стану інтегратора (для плавного перемикання режимів)
         public (double sum, double prev) IntState
         {
             get => (intSum, prevX);

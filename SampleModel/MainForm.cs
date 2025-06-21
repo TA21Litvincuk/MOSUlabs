@@ -26,6 +26,7 @@ namespace SampleModel
 
         private bool isAutoMode = false; // false = ручний режим, true = автомат
         private double setpoint = 50;    // бажаний рівень у режимі ПІД
+        private double ise = 0;
 
         // Змінні для збереження стану інтегратора при переключенні режимів
         private (double sum, double prev) savedIntState;
@@ -65,7 +66,6 @@ namespace SampleModel
                 // Автоматичне керування через ПІД-регулятор
                 double error = setpoint - y;
                 controlInput = pid.Calc(error);
-                
                 x1 = controlInput; // для графіка
             }
             else
@@ -79,13 +79,18 @@ namespace SampleModel
             y = Block.Calc(x1, x2);
             time += dt;
 
-            // Виведення на форму
-            lbY.Text = y.ToString("F2");
-            chMainPlot.Series[0].Points.AddXY(time, y);
-            chMainPlot.Series[1].Points.AddXY(time, x1);
-            chMainPlot.Series[2].Points.AddXY(time, x2);
+            // ---- ISE ----
+            double errorForISE = setpoint - y;
+            ise += errorForISE * errorForISE * dt; // Інтеграл квадрата помилки
 
-            // Оновлюємо текстові поля для обох режимів
+            // ---- Додавання даних на графіки ----
+            chMainPlot.Series["seriesY"].Points.AddXY(time, y);      // Рівень у баку (y)
+            chMainPlot.Series["seriesX"].Points.AddXY(time, x1);        // Керуючий сигнал (u1)
+            chMainPlot.Series["seriesX2"].Points.AddXY(time, x2);        // Злив (u2)
+            //chMainPlot.Series["SeriesISE"].Points.AddXY(time, ise);      // ISE
+
+            // ---- Оновлюємо текстові поля ----
+            lbY.Text = y.ToString("F2");
             tbX.Text = x1.ToString("F2");
             tbX2.Text = x2.ToString("F2");
         }
@@ -242,51 +247,59 @@ namespace SampleModel
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var optimizer = new PIDOptimizer((k, ti) =>
+            // Новий об'єкт системи для кожної оцінки (уникаємо накопичення стану)
+            Func<double, double, double> iseFunc = (k, ti) =>
             {
-                // Обмеження параметрів PID для уникнення надто великих або малих значень
+                // Обмеження на параметри PID (запобігає дивним результатам)
                 if (k < 0.1 || k > 10 || ti < 0.1 || ti > 50)
-                    return double.MaxValue; // штрафуємо за вихід за межі
+                    return double.MaxValue;
 
                 var sys = new ControlSystem(0.1);
                 sys.PID.K = k;
                 sys.PID.Ti = ti;
-                sys.PID.Td = pid.Td; // залишаємо сталим або 0
+                sys.PID.Td = pid.Td; // Td залишаємо сталим або оптимізуємо окремо
+                sys.SetPoint = setpoint; // або 5, або твоє поле
 
-                sys.SetPoint = 5;
-                int steps = 100; // 10 секунд моделювання (0.1 * 100 = 10)
-                double errorSum = 0;
-
+                double ise = 0;
+                int steps = 100; // 10 секунд
                 for (int i = 0; i < steps; i++)
                 {
                     sys.Calc();
-                    errorSum += Math.Pow(sys.SetPoint - sys.Output, 2) * 0.1; // інтеграл квадрата помилки (ISE)
+                    ise += Math.Pow(sys.E, 2) * 0.1;
                 }
+                return ise;
+            };
 
-                return errorSum;
-            });
+            // Стартова точка оптимізації
+            var optimizer = new PIDOptimizer(iseFunc);
+            var (bestK, bestTi, minISE, iters) = optimizer.Optimize(pid.K, pid.Ti);
 
-            var (bestK, bestTi, ise, iters) = optimizer.Optimize(pid.K, pid.Ti);
+            // Підставляємо знайдені параметри у твій робочий регулятор
             pid.K = bestK;
             pid.Ti = bestTi;
-
             tbK.Text = pid.K.ToString("F2");
             tbTi.Text = pid.Ti.ToString("F2");
 
-            MessageBox.Show($"Оптимізація завершена!\nK = {bestK:F2}, Ti = {bestTi:F2}\nISE = {ise:F4}\nІтерацій = {iters}", "Результат");
+            MessageBox.Show(
+                $"Параметричний синтез завершено!\nK = {bestK:F2}, Ti = {bestTi:F2}\nISE = {minISE:F4}\nІтерацій = {iters}",
+                "Параметричний синтез"
+            );
 
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             var optimizer = new GaussSeidelOptimizer();
-            var (u1, u2, Imin, iter) = optimizer.Minimize(0, 0);
+            // Початкові значення (можна взяти з полів або задати явно)
+            double startU1 = 0, startU2 = 0;
+
+            var (u1, u2, Imin, iter) = optimizer.Minimize(startU1, startU2);
 
             MessageBox.Show(
-                $"Оптимізація завершена!\n" +
+                $"Мінімум знайдено:\n" +
                 $"u1 = {u1:F4}\nu2 = {u2:F4}\n" +
-                $"Imin = {Imin:F5}\nІтерацій = {iter}",
-                "Гаус-Зейдель"
+                $"Imin = {Imin:F4}\nІтерацій = {iter}",
+                "Gauss-Seidel Optimization"
             );
         }
     }
