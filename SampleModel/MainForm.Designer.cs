@@ -26,11 +26,11 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series16 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series17 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series18 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
@@ -67,6 +67,8 @@
             this.tbSetpoint = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chMainPlot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -74,8 +76,8 @@
             // btnStop
             // 
             this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStop.Location = new System.Drawing.Point(712, 517);
-            this.btnStop.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnStop.Location = new System.Drawing.Point(866, 517);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(2);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(56, 19);
             this.btnStop.TabIndex = 0;
@@ -86,8 +88,8 @@
             // btnStart
             // 
             this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStart.Location = new System.Drawing.Point(651, 517);
-            this.btnStart.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnStart.Location = new System.Drawing.Point(805, 517);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(2);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(56, 19);
             this.btnStart.TabIndex = 1;
@@ -98,16 +100,15 @@
             // tbX
             // 
             this.tbX.Location = new System.Drawing.Point(214, 40);
-            this.tbX.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbX.Margin = new System.Windows.Forms.Padding(2);
             this.tbX.Name = "tbX";
             this.tbX.Size = new System.Drawing.Size(48, 20);
             this.tbX.TabIndex = 2;
-            this.tbX.TextChanged += new System.EventHandler(this.tbX_TextChanged);
             // 
             // btnUp
             // 
             this.btnUp.Location = new System.Drawing.Point(267, 41);
-            this.btnUp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnUp.Margin = new System.Windows.Forms.Padding(2);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(20, 19);
             this.btnUp.TabIndex = 3;
@@ -118,7 +119,7 @@
             // btnDn
             // 
             this.btnDn.Location = new System.Drawing.Point(190, 40);
-            this.btnDn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnDn.Margin = new System.Windows.Forms.Padding(2);
             this.btnDn.Name = "btnDn";
             this.btnDn.Size = new System.Drawing.Size(20, 19);
             this.btnDn.TabIndex = 4;
@@ -131,32 +132,32 @@
             this.chMainPlot.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea6.Name = "chMainArea";
-            this.chMainPlot.ChartAreas.Add(chartArea6);
-            legend6.Name = "Legend1";
-            this.chMainPlot.Legends.Add(legend6);
+            chartArea1.Name = "chMainArea";
+            this.chMainPlot.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chMainPlot.Legends.Add(legend1);
             this.chMainPlot.Location = new System.Drawing.Point(9, 210);
-            this.chMainPlot.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chMainPlot.Margin = new System.Windows.Forms.Padding(2);
             this.chMainPlot.Name = "chMainPlot";
-            series16.ChartArea = "chMainArea";
-            series16.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series16.Legend = "Legend1";
-            series16.LegendText = "Y";
-            series16.Name = "seriesY";
-            series17.ChartArea = "chMainArea";
-            series17.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series17.Legend = "Legend1";
-            series17.LegendText = "X1";
-            series17.Name = "seriesX";
-            series18.ChartArea = "chMainArea";
-            series18.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series18.Legend = "Legend1";
-            series18.LegendText = "X2";
-            series18.Name = "seriesX2";
-            this.chMainPlot.Series.Add(series16);
-            this.chMainPlot.Series.Add(series17);
-            this.chMainPlot.Series.Add(series18);
-            this.chMainPlot.Size = new System.Drawing.Size(759, 302);
+            series1.ChartArea = "chMainArea";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.LegendText = "Y";
+            series1.Name = "seriesY";
+            series2.ChartArea = "chMainArea";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Legend = "Legend1";
+            series2.LegendText = "X1";
+            series2.Name = "seriesX";
+            series3.ChartArea = "chMainArea";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Legend = "Legend1";
+            series3.LegendText = "X2";
+            series3.Name = "seriesX2";
+            this.chMainPlot.Series.Add(series1);
+            this.chMainPlot.Series.Add(series2);
+            this.chMainPlot.Series.Add(series3);
+            this.chMainPlot.Size = new System.Drawing.Size(913, 302);
             this.chMainPlot.TabIndex = 5;
             this.chMainPlot.Click += new System.EventHandler(this.chMainPlot_Click);
             // 
@@ -190,7 +191,7 @@
             // 
             this.btnX1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnX1.Location = new System.Drawing.Point(9, 517);
-            this.btnX1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnX1.Margin = new System.Windows.Forms.Padding(2);
             this.btnX1.Name = "btnX1";
             this.btnX1.Size = new System.Drawing.Size(56, 19);
             this.btnX1.TabIndex = 9;
@@ -202,7 +203,7 @@
             // 
             this.btnX10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnX10.Location = new System.Drawing.Point(70, 517);
-            this.btnX10.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnX10.Margin = new System.Windows.Forms.Padding(2);
             this.btnX10.Name = "btnX10";
             this.btnX10.Size = new System.Drawing.Size(56, 19);
             this.btnX10.TabIndex = 10;
@@ -216,7 +217,7 @@
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
             this.pictureBox1.Location = new System.Drawing.Point(303, 14);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(360, 181);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -227,7 +228,7 @@
             // btnDn2
             // 
             this.btnDn2.Location = new System.Drawing.Point(190, 89);
-            this.btnDn2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnDn2.Margin = new System.Windows.Forms.Padding(2);
             this.btnDn2.Name = "btnDn2";
             this.btnDn2.Size = new System.Drawing.Size(20, 19);
             this.btnDn2.TabIndex = 14;
@@ -238,7 +239,7 @@
             // btnUp2
             // 
             this.btnUp2.Location = new System.Drawing.Point(267, 89);
-            this.btnUp2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnUp2.Margin = new System.Windows.Forms.Padding(2);
             this.btnUp2.Name = "btnUp2";
             this.btnUp2.Size = new System.Drawing.Size(20, 19);
             this.btnUp2.TabIndex = 13;
@@ -249,11 +250,10 @@
             // tbX2
             // 
             this.tbX2.Location = new System.Drawing.Point(214, 88);
-            this.tbX2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbX2.Margin = new System.Windows.Forms.Padding(2);
             this.tbX2.Name = "tbX2";
             this.tbX2.Size = new System.Drawing.Size(48, 20);
             this.tbX2.TabIndex = 12;
-            this.tbX2.TextChanged += new System.EventHandler(this.tbX2_TextChanged);
             // 
             // label1
             // 
@@ -455,11 +455,33 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(677, 107);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(88, 40);
+            this.button3.TabIndex = 51;
+            this.button3.Text = "OPTIMIZE";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(831, 19);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(88, 82);
+            this.button4.TabIndex = 52;
+            this.button4.Text = "Lab3 Results";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(777, 545);
+            this.ClientSize = new System.Drawing.Size(931, 545);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.lbYCaption);
@@ -494,7 +516,7 @@
             this.Controls.Add(this.tbX);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnStop);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
             this.Text = "Sample model";
             ((System.ComponentModel.ISupportInitialize)(this.chMainPlot)).EndInit();
@@ -541,6 +563,8 @@
         private System.Windows.Forms.TextBox tbSetpoint;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
     }
 }
 

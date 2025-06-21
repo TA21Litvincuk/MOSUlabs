@@ -14,11 +14,12 @@ public class PIDBlock : BaseBlock
         private double intSum = 0;
 
         public double K { get; set; } = 1;
-        private double ki = 0.000001;
+
+        private double ki = 1; // Замість 0.000001
         public double Ti
         {
-            get => 1 / ki;
-            set => ki = (value == 0) ? double.MaxValue : 1 / value;
+            get => (ki == 0) ? 0 : 1 / ki;
+            set => ki = (value <= 0) ? 0 : 1 / value;
         }
         public double Ki
         {
@@ -38,11 +39,12 @@ public class PIDBlock : BaseBlock
 
         public override double Calc(double x)
         {
-            // Попередній розрахунок керуючого сигналу
             double derivative = (x - prevX) / dt;
+
+            // ПІД вираз
             double u = K * x + ki * intSum + Td * derivative;
 
-            // Перевірка обмеження
+            // Перевірка насичення
             bool limited = false;
             if (u > UpLimit)
             {
@@ -55,25 +57,25 @@ public class PIDBlock : BaseBlock
                 limited = true;
             }
 
-            // Компенсація насичення (anti-windup)
-            if (ki != 0 && limited)
+            // Anti-windup: інтегруємо лише якщо не насичено та інтеграл активний
+            if (!limited && ki != 0)
             {
-                intSum = (u - K * x - Td * derivative) / ki;
-            }
-            else
-            {
-                intSum += (prevX + x) * dt / 2;
+                intSum += (prevX + x) * dt / 2.0;
             }
 
             prevX = x;
             return u;
         }
 
-        // Стан інтегратора — для збереження при перемиканні режимів
+        // Для збереження/відновлення стану інтегратора (при зміні режиму)
         public (double sum, double prev) IntState
         {
             get => (intSum, prevX);
-            set { intSum = value.sum; prevX = value.prev; }
+            set
+            {
+                intSum = value.sum;
+                prevX = value.prev;
+            }
         }
     }
 }

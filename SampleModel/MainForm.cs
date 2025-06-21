@@ -239,14 +239,55 @@ namespace SampleModel
             MessageBox.Show("Автоматичний режим (PID) активовано");
         }
 
-        private void tbX_TextChanged(object sender, EventArgs e)
+
+        private void button3_Click(object sender, EventArgs e)
         {
+            var optimizer = new PIDOptimizer((k, ti) =>
+            {
+                // Обмеження параметрів PID для уникнення надто великих або малих значень
+                if (k < 0.1 || k > 10 || ti < 0.1 || ti > 50)
+                    return double.MaxValue; // штрафуємо за вихід за межі
+
+                var sys = new ControlSystem(0.1);
+                sys.PID.K = k;
+                sys.PID.Ti = ti;
+                sys.PID.Td = pid.Td; // залишаємо сталим або 0
+
+                sys.SetPoint = 5;
+                int steps = 100; // 10 секунд моделювання (0.1 * 100 = 10)
+                double errorSum = 0;
+
+                for (int i = 0; i < steps; i++)
+                {
+                    sys.Calc();
+                    errorSum += Math.Pow(sys.SetPoint - sys.Output, 2) * 0.1; // інтеграл квадрата помилки (ISE)
+                }
+
+                return errorSum;
+            });
+
+            var (bestK, bestTi, ise, iters) = optimizer.Optimize(pid.K, pid.Ti);
+            pid.K = bestK;
+            pid.Ti = bestTi;
+
+            tbK.Text = pid.K.ToString("F2");
+            tbTi.Text = pid.Ti.ToString("F2");
+
+            MessageBox.Show($"Оптимізація завершена!\nK = {bestK:F2}, Ti = {bestTi:F2}\nISE = {ise:F4}\nІтерацій = {iters}", "Результат");
 
         }
 
-        private void tbX2_TextChanged(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e)
         {
+            var optimizer = new GaussSeidelOptimizer();
+            var (u1, u2, Imin, iter) = optimizer.Minimize(0, 0);
 
+            MessageBox.Show(
+                $"Оптимізація завершена!\n" +
+                $"u1 = {u1:F4}\nu2 = {u2:F4}\n" +
+                $"Imin = {Imin:F5}\nІтерацій = {iter}",
+                "Гаус-Зейдель"
+            );
         }
     }
 }

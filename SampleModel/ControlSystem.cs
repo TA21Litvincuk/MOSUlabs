@@ -10,8 +10,9 @@ namespace SampleModel
     public class ControlSystem
     {
         private double dt;
-        private PIDBlock PID;
+        public PIDBlock PID { get; private set; }
         private Tank Tank;
+        public double E => SetPoint - Output;
         private LimitBlock xLimit = new LimitBlock(0, 100);
         private LimitBlock levelLimit = new LimitBlock(0, 10);
         public double Time { get; set; } = 0;
