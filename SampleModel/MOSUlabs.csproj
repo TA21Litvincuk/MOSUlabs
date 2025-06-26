@@ -47,15 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Blocks\APBlock.cs" />
     <Compile Include="Blocks\BaseBlock.cs" />
     <Compile Include="Blocks\ComplexBlock.cs" />
-    <Compile Include="Blocks\DelayBlock.cs" />
     <Compile Include="Blocks\DiffBlock.cs" />
     <Compile Include="Blocks\GainBlock.cs" />
     <Compile Include="Blocks\IntBlock.cs" />
     <Compile Include="Blocks\LimitBlock.cs" />
-    <Compile Include="Blocks\NoiseBlock.cs" />
+    <Compile Include="Blocks\LimitedIntBlock.cs" />
     <Compile Include="Blocks\PIDblock.cs" />
     <Compile Include="ControlSystem.cs" />
     <Compile Include="Criteria.cs" />

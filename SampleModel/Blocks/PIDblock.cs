@@ -9,14 +9,13 @@ namespace SampleModel.Blocks
 {
 public class PIDBlock : BaseBlock
     {
+        private double dt;                       // Крок дискретизації
+        private double prevX = 0;                // Попереднє значення помилки (для похідної)
+        private LimitedIntBlock integrator;      // Інтегратор з обмеженням
 
-        private double dt;                  // Крок дискретизації
-        private double prevX = 0;           // Попереднє значення вхідного сигналу (для диференціалу)
-        private double intSum = 0;          // Накопичена інтегральна складова
+        public double K { get; set; } = 1;       // Пропорційний коефіцієнт
 
-        public double K { get; set; } = 1;  // Пропорційний коефіцієнт
-
-        private double ki = 1;              // Інтегральний коефіцієнт (1/Ti)
+        private double ki = 1;                   // Інтегральний коефіцієнт (1/Ti)
         public double Ti
         {
             get => (ki == 0) ? 0 : 1 / ki;
@@ -28,56 +27,60 @@ public class PIDBlock : BaseBlock
             set => ki = value;
         }
 
-        public double Td { get; set; } = 0; // Диференціальний коефіцієнт
+        public double Td { get; set; } = 0;      // Диференційний коефіцієнт
 
-        public double UpLimit { get; set; } = 100; // Верхня межа вихідного сигналу
-        public double DownLimit { get; set; } = 0; // Нижня межа
+        // Межі вихідного сигналу
+        public double UpLimit
+        {
+            get => integrator.UpLimit;
+            set => integrator.UpLimit = value;
+        }
+        public double DownLimit
+        {
+            get => integrator.DownLimit;
+            set => integrator.DownLimit = value;
+        }
 
         public PIDBlock(double dt)
         {
             this.dt = dt;
+            // Початкові межі інтегратора
+            integrator = new LimitedIntBlock(dt, 0, 100);
         }
 
-        // Обчислення керуючого сигналу за поточним значенням помилки (x)
+        // Основний метод — обчислення керуючого сигналу регулятора
         public override double Calc(double x)
         {
-            double derivative = (x - prevX) / dt; // Похідна (швидкість зміни помилки)
+            double derivative = (x - prevX) / dt;          // Диференційна складова (швидкість зміни помилки)
+            double integral = integrator.Calc(x);          // Інтегральна складова з обмеженням
 
-            // Основна формула ПІД-регулятора
-            double u = K * x + ki * intSum + Td * derivative;
+            double u = K * x + ki * integral + Td * derivative; // ПІД вираз
 
-            // Обмеження сигналу (saturation)
-            bool limited = false;
-            if (u > UpLimit)
-            {
-                u = UpLimit;
-                limited = true;
-            }
-            else if (u < DownLimit)
-            {
-                u = DownLimit;
-                limited = true;
-            }
+            // Обмеження вихідного сигналу (saturation)
+            if (u > UpLimit) u = UpLimit;
+            else if (u < DownLimit) u = DownLimit;
 
-            // Anti-windup: інтегруємо тільки якщо не насичено та інтеграл активний
-            if (!limited && ki != 0)
-            {
-                intSum += (prevX + x) * dt / 2.0; // Інтегруємо методом трапецій
-            }
-
-            prevX = x;
+            prevX = x;  // Оновлюємо попередню помилку
             return u;
+        }
+
+        // Для скидання інтегратора (наприклад, при зміні режиму)
+        public void ResetIntegrator()
+        {
+            integrator = new LimitedIntBlock(dt, DownLimit, UpLimit);
         }
 
         // Збереження/відновлення стану інтегратора (для плавного перемикання режимів)
         public (double sum, double prev) IntState
         {
-            get => (intSum, prevX);
+            get => (integrator == null ? (0, 0) : (integrator.GetState().sum, integrator.GetState().prev));
             set
             {
-                intSum = value.sum;
-                prevX = value.prev;
+                if (integrator != null)
+                    integrator.SetState(value.sum, value.prev);
             }
         }
     }
+
+
 }

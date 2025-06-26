@@ -9,6 +9,7 @@ namespace SampleModel
 {
     public class Tank
     {
+        // Tank моделює інтегруючу ланку(сумує різницю між подачею та зливом).
         private ComplexBlock Block;                 // Комплексний блок (може містити кілька обчислювальних блоків)
         private GainBlock kx1;                      // Підсилювач для x1 з коефіцієнтом 1
         private GainBlock kx2;                      // Підсилювач для x2 з коефіцієнтом -1

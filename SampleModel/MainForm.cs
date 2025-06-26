@@ -130,12 +130,12 @@ namespace SampleModel
 
         // Зміна швидкості таймера — повільно (1 раз/сек)
         private void btnX1_Click(object sender, EventArgs e) {
-            tmModel.Interval = 1000;
+            tmModel.Interval = 1000;    //Раз в секунду моделювання
         }
 
         // Зміна швидкості таймера — швидко (10 раз/сек)
         private void btnX10_Click(object sender, EventArgs e) {
-            tmModel.Interval = 100;
+            tmModel.Interval = 100;     //10 раз в секунду моделювання
         }
 
         private void lbYCaption_Click(object sender, EventArgs e) {
